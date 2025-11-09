@@ -471,8 +471,6 @@ public class PlayerCharacter : MonoBehaviour
 
         Rigidbody2D bombRb = bomb.GetComponent<Rigidbody2D>();
 
-        float direction = (transform.position.x + _bombPhysic.DeplacementValues);
-
-                
+        float direction = (transform.position.x + _bombPhysic.DeplacementValues);     
     }
 }

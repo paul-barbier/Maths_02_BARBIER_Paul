@@ -2,18 +2,31 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static PlayerCharacter;
 
 public class Bomb : MonoBehaviour
 {
     [Serializable]
-    private struct GravityBomb
+    private struct MovementBomb
     {
-        public float MaxForce;
+        public float MaxSpeed;
         public float Acceleration;
         public float MaxAcceleration;
     }
 
-    [SerializeField] private GravityBomb _BombPhysics = new GravityBomb();
+    [Serializable]
+    private struct GravityValues
+    {
+        public float MaxForce;
+        public float Acceleration;
+        public float MaxAcceleration;
+        [Tooltip("Range [0, 1]")] public AnimationCurve GravityRemapFromCoyoteTime;
+    }
+
+    public bool IsGrounded { get; private set; } = true;
+
+    [SerializeField] private MovementBomb _BombPhysics = new MovementBomb();
+    [SerializeField] private GravityValues _gravityParameters = new GravityValues();
 
     private float _currentHorizontalVelocity = 0.0f;
     private Rigidbody2D _rigidbody = null;
@@ -41,7 +54,7 @@ public class Bomb : MonoBehaviour
             Destroy(gameObject);
         }
 
-        Gravity();
+        BombMovement();
 
         _rigidbody.velocity += _forceToAdd;
     }
@@ -51,16 +64,22 @@ public class Bomb : MonoBehaviour
 
     }
 
-    private void Gravity()
+    private void BombMovement()
     {
-        float acceleration = _BombPhysics.Acceleration * 1.0f * Time.fixedDeltaTime;
 
-        float maxGravityForce = _BombPhysics.MaxForce;
+        float maxSpeed = _BombPhysics.MaxAcceleration * Time.fixedDeltaTime;
+        Vector2 force = new Vector2(maxSpeed, -5.0f);
+        _rigidbody.AddForce(force, ForceMode2D.Impulse);
+
+        float acceleration = _gravityParameters.Acceleration * Time.fixedDeltaTime;
+
+        float maxGravityForce = _gravityParameters.MaxForce;
         _currentGravity = Mathf.MoveTowards(_currentGravity, maxGravityForce, acceleration);
 
         float velocityDelta = _currentGravity - _rigidbody.velocity.y;
 
-        velocityDelta = Mathf.Clamp(velocityDelta, -_BombPhysics.MaxAcceleration, 0.0f);
+        if (IsGrounded)
+            _forceToAdd.y += velocityDelta * 0.5f; 
 
         _forceToAdd.y += velocityDelta;
     }
