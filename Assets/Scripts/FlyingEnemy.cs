@@ -70,7 +70,7 @@ public class FlyingEnemy : MonoBehaviour
             Destroy(bomb.gameObject);
             _stunned = true;
 
-            Vector3 direction = bomb.transform.forward.normalized;
+            // Vector3 direction = bomb.transform.forward.normalized;
 
             _rigidbody.transform.position += new Vector3(bomb.KnockbackForce * (-1.0f), 0.0f, 0.0f);
             //_rigidbody.transform.position += new Vector3(bomb.KnockbackForce * direction.x, 0.0f, 0.0f);

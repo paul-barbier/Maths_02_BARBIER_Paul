@@ -66,6 +66,7 @@ public class Bomb : MonoBehaviour
 
     private void BombMovement()
     {
+        // Je comprend quand je lis les lignes mais j'arrive pas à mettre en place ce que je veux faire 
 
         float maxSpeed = _BombPhysics.MaxAcceleration * Time.fixedDeltaTime;
         Vector2 force = new Vector2(maxSpeed, -5.0f);
